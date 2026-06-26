@@ -1,0 +1,13 @@
+name: Build inference image
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'apps/inference/**'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t ahn4-inference ./apps/inference

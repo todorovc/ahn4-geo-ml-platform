@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ahn4-processing
+  namespace: data-platform
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      serviceAccountName: ahn-processing-sa
+      restartPolicy: Never
+      containers:
+        - name: ahn4-processing
+          image: REPLACE_ME/ahn4-processing:latest
+          env:
+            - name: AWS_REGION
+              value: "eu-west-1"
+            - name: RAW_BUCKET
+              value: "geo-ml-ahn"
+            - name: RAW_PREFIX
+              value: "raw/ahn4/dsm"
+            - name: FEATURE_PREFIX
+              value: "features/terrain_grid"

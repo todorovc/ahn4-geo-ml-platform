@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ahn4-ingest
+  namespace: data-platform
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      serviceAccountName: ahn-ingest-sa
+      restartPolicy: Never
+      containers:
+        - name: ahn4-ingest
+          image: REPLACE_ME/ahn4-ingest:latest
+          env:
+            - name: AWS_REGION
+              value: "eu-west-1"
+            - name: RAW_BUCKET
+              value: "geo-ml-ahn"
+            - name: RAW_PREFIX
+              value: "raw/ahn4/dsm"
+            - name: AHN_TILE_LIST_URL
+              value: "https://example.invalid/ahn4-tiles.csv"
