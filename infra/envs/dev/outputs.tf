@@ -29,3 +29,12 @@ output "ingest_irsa_role_arn" {
 output "processing_irsa_role_arn" {
   value = module.iam_irsa.processing_role_arn
 }
+
+
+output "github_actions_role_arn" {
+  value = module.github_actions_oidc.role_arn
+}
+
+output "github_actions_oidc_provider_arn" {
+  value = module.github_actions_oidc.oidc_provider_arn
+}

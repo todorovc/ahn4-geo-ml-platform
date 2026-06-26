@@ -32,3 +32,14 @@ variable "private_subnet_cidrs" {
   type    = list(string)
   default = ["10.42.10.0/24", "10.42.11.0/24"]
 }
+
+
+variable "github_owner" {
+  type    = string
+  default = "todorovc"
+}
+
+variable "github_repo" {
+  type    = string
+  default = "ahn4-geo-ml-platform"
+}

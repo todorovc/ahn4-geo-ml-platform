@@ -58,3 +58,14 @@ module "iam_irsa" {
   ingest_service_account_name  = "ahn-ingest-sa"
   process_service_account_name = "ahn-processing-sa"
 }
+
+module "github_actions_oidc" {
+  source               = "../../modules/github_actions_oidc"
+  github_owner         = var.github_owner
+  github_repo          = var.github_repo
+  role_name            = "${var.project_name}-github-actions-role"
+  aws_region           = var.aws_region
+  ecr_repository_arns  = values(module.ecr.repository_arns)
+  eks_cluster_arn      = module.eks.cluster_arn
+  allow_main_branch_only = true
+}

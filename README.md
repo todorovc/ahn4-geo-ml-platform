@@ -281,8 +281,10 @@ The repository now includes starter GitHub Actions workflows for:
 To make these workflows operational, configure:
 
 - `AWS_GITHUB_ACTIONS_ROLE_ARN` as a GitHub Actions secret
-- AWS IAM trust for GitHub OIDC
+- AWS IAM trust for GitHub OIDC (now scaffolded in Terraform via `infra/modules/github_actions_oidc`)
 - Existing ECR repositories and EKS cluster from Terraform apply
+
+After `terraform apply`, copy the `github_actions_role_arn` output into the repository secret named `AWS_GITHUB_ACTIONS_ROLE_ARN`.
 
 These workflows are starter-grade and intentionally simple. A stronger production setup would add test stages, reusable workflow templates, protected environments, and manifest templating.
 
