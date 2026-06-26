@@ -1,0 +1,46 @@
+name: deploy-processing-job
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Image tag to deploy'
+        required: true
+        default: 'latest'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      AWS_REGION: eu-west-1
+      EKS_CLUSTER_NAME: ahn4-geo-ml-platform-eks
+      K8S_NAMESPACE: data-platform
+      ECR_REPOSITORY: ahn4-processing
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE_ARN }}
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER_NAME
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Render manifest
+        run: |
+          IMAGE_URI=${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:${{ github.event.inputs.image_tag }}
+          sed "s|REPLACE_WITH_ECR_URI|${{ steps.login-ecr.outputs.registry }}|g" k8s/base/jobs/ahn-processing-job.yaml > /tmp/ahn-processing-job.yaml
+          sed -i.bak "s|ahn4-processing:latest|ahn4-processing:${{ github.event.inputs.image_tag }}|g" /tmp/ahn-processing-job.yaml
+
+      - name: Apply job
+        run: kubectl apply -f /tmp/ahn-processing-job.yaml -n $K8S_NAMESPACE

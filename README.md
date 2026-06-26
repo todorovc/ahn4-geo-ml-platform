@@ -267,6 +267,25 @@ This repository is a strong starter platform, but several parts are still intent
 - no GitOps or automated manifest promotion flow yet
 - no observability stack deployment yet
 
+## CI/CD workflows
+
+The repository now includes starter GitHub Actions workflows for:
+
+- `terraform-plan.yml` — validates and plans Terraform changes for the dev environment
+- `build-processing-image.yml` — builds and pushes the processing image to ECR on changes to `apps/processing`
+- `build-training-image.yml` — builds and pushes the training image to ECR on changes to `apps/training`
+- `deploy-processing-job.yml` — manually deploys the processing Kubernetes job with a chosen image tag
+
+### Required GitHub configuration
+
+To make these workflows operational, configure:
+
+- `AWS_GITHUB_ACTIONS_ROLE_ARN` as a GitHub Actions secret
+- AWS IAM trust for GitHub OIDC
+- Existing ECR repositories and EKS cluster from Terraform apply
+
+These workflows are starter-grade and intentionally simple. A stronger production setup would add test stages, reusable workflow templates, protected environments, and manifest templating.
+
 ## Recommended next steps
 
 1. Replace placeholder AHN tile discovery with a real source catalog workflow
@@ -276,7 +295,7 @@ This repository is a strong starter platform, but several parts are still intent
 5. Implement a real inference API that loads a trained model artifact
 6. Add evaluation notebooks and richer geospatial validation metrics
 7. Add monitoring for jobs, model quality, and data freshness
-8. Add CI/CD workflows for image build, Terraform plan, and Kubernetes deployment
+8. Extend CI/CD with test, security scan, and deployment promotion stages
 
 ## Why this project is useful
 
