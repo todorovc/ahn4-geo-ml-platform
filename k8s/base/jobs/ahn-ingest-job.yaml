@@ -3,15 +3,21 @@ kind: Job
 metadata:
   name: ahn4-ingest
   namespace: data-platform
+  labels:
+    app: ahn4-ingest
 spec:
   backoffLimit: 3
   template:
+    metadata:
+      labels:
+        app: ahn4-ingest
     spec:
       serviceAccountName: ahn-ingest-sa
       restartPolicy: Never
       containers:
         - name: ahn4-ingest
-          image: REPLACE_ME/ahn4-ingest:latest
+          image: REPLACE_WITH_ECR_URI/ahn4-ingest:latest
+          imagePullPolicy: IfNotPresent
           env:
             - name: AWS_REGION
               value: "eu-west-1"
@@ -21,3 +27,12 @@ spec:
               value: "raw/ahn4/dsm"
             - name: AHN_TILE_LIST_URL
               value: "https://example.invalid/ahn4-tiles.csv"
+            - name: BBOX
+              value: "4.0,51.9,4.5,52.1"
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "2"
+              memory: "4Gi"

@@ -3,15 +3,21 @@ kind: Job
 metadata:
   name: ahn4-processing
   namespace: data-platform
+  labels:
+    app: ahn4-processing
 spec:
   backoffLimit: 3
   template:
+    metadata:
+      labels:
+        app: ahn4-processing
     spec:
       serviceAccountName: ahn-processing-sa
       restartPolicy: Never
       containers:
         - name: ahn4-processing
-          image: REPLACE_ME/ahn4-processing:latest
+          image: REPLACE_WITH_ECR_URI/ahn4-processing:latest
+          imagePullPolicy: IfNotPresent
           env:
             - name: AWS_REGION
               value: "eu-west-1"
@@ -19,5 +25,18 @@ spec:
               value: "geo-ml-ahn"
             - name: RAW_PREFIX
               value: "raw/ahn4/dsm"
+            - name: PROCESSED_PREFIX
+              value: "processed/ahn4/dsm-features"
             - name: FEATURE_PREFIX
               value: "features/terrain_grid"
+            - name: GRID_SIZE_METERS
+              value: "50"
+            - name: TILE_ID_FILTER
+              value: ""
+          resources:
+            requests:
+              cpu: "1"
+              memory: "4Gi"
+            limits:
+              cpu: "4"
+              memory: "8Gi"

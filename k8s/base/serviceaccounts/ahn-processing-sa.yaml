@@ -3,3 +3,5 @@ kind: ServiceAccount
 metadata:
   name: ahn-processing-sa
   namespace: data-platform
+  annotations:
+    eks.amazonaws.com/role-arn: REPLACE_WITH_PROCESSING_IRSA_ROLE_ARN
