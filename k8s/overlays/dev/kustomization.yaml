@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: data-platform
+resources:
+  - ../../base/namespaces
+  - ../../base/serviceaccounts
+  - ../../base/jobs
+  - ../../base/cronjobs
+images:
+  - name: REPLACE_WITH_ECR_URI/ahn4-ingest
+    newName: ${INGEST_IMAGE}
+  - name: REPLACE_WITH_ECR_URI/ahn4-processing
+    newName: ${PROCESSING_IMAGE}
+patches:
+  - target:
+      kind: Job
+      name: ahn4-processing
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/env/0/value
+        value: ${RAW_BUCKET}
